@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+export default {
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   darkMode: "class",
   theme: {
     extend: {
@@ -29,8 +29,8 @@ module.exports = {
         sans: ["Inter", "ui-sans-serif", "system-ui"],
       },
       animation: {
-        "fade-in":   "fadeIn 0.3s ease-in-out",
-        "slide-up":  "slideUp 0.3s ease-out",
+        "fade-in":    "fadeIn 0.3s ease-in-out",
+        "slide-up":   "slideUp 0.3s ease-out",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
