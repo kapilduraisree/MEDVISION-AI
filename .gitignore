@@ -1,39 +1,25 @@
 # Environment
 .env
-backend/.env
-*.env.local
+*.env
 
 # Python
 __pycache__/
 *.py[cod]
-*.egg-info/
-dist/
-build/
-.venv/
+*.pyo
 venv/
-env/
-*.pyc
-backend/venv/
+.venv/
+*.egg-info/
 
-# Node / React
-node_modules/
-frontend/node_modules/
-frontend/build/
-frontend/dist/
-.npm/
-*.log
-npm-debug.log*
-
-# Uploads (user data - don't commit)
+# Uploads (user files)
 uploads/
-backend/uploads/
-backend/medvision.db
 
 # IDE
 .vscode/
 .idea/
-*.swp
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Streamlit cache
+.streamlit/secrets.toml

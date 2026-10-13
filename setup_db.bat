@@ -1,45 +1,49 @@
 @echo off
-echo ============================================================
-echo  MedVision AI - Database Setup
-echo ============================================================
-echo.
-echo This script sets up the PostgreSQL database.
-echo Make sure PostgreSQL is installed and running.
-echo.
-
-REM Default connection values - change these to match your setup
-set PGHOST=localhost
-set PGPORT=5432
-set PGUSER=postgres
-
-echo Step 1: Creating database user 'medvision'...
-psql -U %PGUSER% -h %PGHOST% -p %PGPORT% -c "CREATE USER medvision WITH PASSWORD 'medvision_secret';" 2>nul
-echo (If 'already exists' error appeared, that is fine.)
+REM ============================================================
+REM MedVision AI - Database Setup Script
+REM Run AFTER PostgreSQL is installed and running
+REM ============================================================
 
 echo.
-echo Step 2: Creating database 'medvision_ai'...
-psql -U %PGUSER% -h %PGHOST% -p %PGPORT% -c "CREATE DATABASE medvision_ai OWNER medvision;" 2>nul
-psql -U %PGUSER% -h %PGHOST% -p %PGPORT% -c "GRANT ALL PRIVILEGES ON DATABASE medvision_ai TO medvision;" 2>nul
+echo  ==========================================
+echo   MedVision AI - Database Setup
+echo  ==========================================
+echo.
+echo  This will create the database, run the schema,
+echo  and load sample data with demo accounts.
+echo.
+echo  Prerequisites:
+echo    - PostgreSQL installed and running
+echo    - psql available on PATH
+echo.
+
+set /p PGUSER=Enter PostgreSQL superuser (default: postgres): 
+if "%PGUSER%"=="" set PGUSER=postgres
 
 echo.
-echo Step 3: Running schema...
-psql -U medvision -h %PGHOST% -p %PGPORT% -d medvision_ai -f database\schema.sql
+echo [1/4] Creating database and user...
+psql -U %PGUSER% -c "CREATE USER medvision WITH PASSWORD 'medvision_secret';" 2>nul
+psql -U %PGUSER% -c "CREATE DATABASE medvision_ai OWNER medvision;" 2>nul
+psql -U %PGUSER% -c "GRANT ALL PRIVILEGES ON DATABASE medvision_ai TO medvision;" 2>nul
+
+echo [2/4] Running schema (creating all tables)...
+psql -U medvision -d medvision_ai -f database\schema.sql
 if errorlevel 1 (
-    echo ERROR: Schema creation failed. Check your PostgreSQL connection.
+    echo ERROR: Schema creation failed. Check PostgreSQL connection.
     pause
     exit /b 1
 )
 
-echo.
-echo Step 4: Loading sample data...
-psql -U medvision -h %PGHOST% -p %PGPORT% -d medvision_ai -f database\sample_data.sql
-if errorlevel 1 (
-    echo WARNING: Sample data load had errors - some data may already exist.
-)
+echo [3/4] Loading sample data and demo accounts...
+psql -U medvision -d medvision_ai -f database\sample_data.sql
 
+echo [4/4] Done!
 echo.
-echo ============================================================
-echo  Database setup complete!
-echo  Connection: postgresql://medvision:medvision_secret@localhost:5432/medvision_ai
-echo ============================================================
+echo  Demo accounts created:
+echo    Patient: patient@medvision.ai  / Password@123
+echo    Doctor:  doctor@medvision.ai   / Password@123
+echo    Admin:   admin@medvision.ai    / Password@123
+echo.
+echo  Now run START.bat to launch the app.
+echo.
 pause
